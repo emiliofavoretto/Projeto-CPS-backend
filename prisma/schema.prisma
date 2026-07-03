@@ -1,0 +1,39 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Artista {
+    id            Int       @id @default(autoincrement())
+    nome          String
+    biografia     String    @db.Text
+    fotoPerfil    String
+    linkPortfolio String?
+    produtos      Produto[]
+
+    @@map("artista")
+}
+
+model Categoria {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  produtos Produto[]    // Relação: uma categoria pode ter vários produtos
+}
+
+model Produto {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  descricao   String    @db.Text
+  urlImagem   String
+  
+  // Conectando o produto ao artista que o criou
+  artistaId   Int
+  artista     Artista   @relation(fields: [artistaId], references: [id])
+
+  // Conectando o produto à sua categoria
+  categoriaId Int
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+}
